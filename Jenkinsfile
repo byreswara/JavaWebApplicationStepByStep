@@ -12,14 +12,6 @@ pipeline {
 	NEXUS_VERSION="`echo -e 'setns x=http://maven.apache.org/POM/4.0.0\ncat /x:project/x:version/text()' | xmllint --shell pom.xml | grep -v /`.${BUILD_NUMBER}"
         FILE_NAME="target/${ARTIFACT_ID}-${VERSION}.war"
       }
-    /*  parameters {
-        gitParameter branch: '', 
-		     branchFilter: '.*', 
-		     defaultValue: 'origin/master', 
-		     description: 'SELECT_BRANCH', 
-		     name: 'SELECT_BRANCH', 
-		     quickFilterEnabled: false, selectedValue: 'NONE', sortMode: 'NONE', tagFilter: '*', type: 'PT_BRANCH_TAG'
-      }*/
       stages {
 	stage('Unit Test') {
             steps {
@@ -66,9 +58,20 @@ pipeline {
 							  verbose: false)])
 	    }
 	 }
+	 stage('Select environment ') {
+	     steps {
+		 script {
+		     input id: 'User input', 
+			        message: 'Choose to Proceed or Abort', 
+			        parameters: [choice(choices: ['sitTomcat', 'STAGING'],
+				description: 'Choose environment to deploy application', 
+				name: 'env')]
+		 }
+	     }
+	 }
 	 stage("Deploy to SIT Environment") {
             steps {
-		sshPublisher(publishers: [sshPublisherDesc(configName: 'sitTomcat', 
+		    sshPublisher(publishers: [sshPublisherDesc(configName: '${env}', 
 							   transfers: [sshTransfer(cleanRemote: false, 
 							   excludes: '', execCommand: '', 
 							   execTimeout: 120000, 
