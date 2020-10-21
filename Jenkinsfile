@@ -58,6 +58,29 @@ pipeline {
 							  verbose: false)])
 	    }
 	 }
+	 stage('Waiting for Approval'){
+           steps {
+	       script {
+                    try {
+                        timeout(time:30, unit:'MINUTES') {
+                            env.APPROVE_SIT = input message: 'Deploy to SIT', ok: 'Continue',
+                                parameters: [choice(name: 'APPROVE_SIT', choices: 'YES\nNO', description: 'Deploy from DEV?')]
+                            if (env.APPROVE_SIT == 'YES')
+				{
+                                env.DSIT = true
+                                } 
+			    else
+			       {
+                                env.DSIT = false
+                                }
+                        }
+                    } catch (error) {
+                        env.DSIT = true
+                        echo 'Timeout has been reached! Deploy to SIT automatically activated'
+                    }
+                }
+	   }
+	 }
 	 stage("Deploy to SIT Environment") {
             steps {
 		    input {
