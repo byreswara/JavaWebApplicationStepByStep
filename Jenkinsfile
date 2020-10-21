@@ -32,7 +32,7 @@ pipeline {
                 sh 'mvn package'
 		}
 	 }
-	 stage('Publish Artifacts') {
+	 stage('Publish Artifacts to Nexus') {
             steps {
               script{
 	        sh "mvn -B deploy:deploy-file -Durl=$NEXUS_URL -DrepositoryId=$NEXUS_REPO_ID -DgroupId=$GROUP_ID -Dversion=$NEXUS_VERSION -DartifactId=$ARTIFACT_ID -Dpackaging=war -Dfile=$FILE_NAME"
