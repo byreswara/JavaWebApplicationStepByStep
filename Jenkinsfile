@@ -12,8 +12,16 @@ pipeline {
 	NEXUS_VERSION="`echo -e 'setns x=http://maven.apache.org/POM/4.0.0\ncat /x:project/x:version/text()' | xmllint --shell pom.xml | grep -v /`.${BUILD_NUMBER}"
         FILE_NAME="target/${ARTIFACT_ID}-${VERSION}.war"
       }
+    /*  parameters {
+        gitParameter branch: '', 
+		     branchFilter: '.*', 
+		     defaultValue: 'origin/master', 
+		     description: 'SELECT_BRANCH', 
+		     name: 'SELECT_BRANCH', 
+		     quickFilterEnabled: false, selectedValue: 'NONE', sortMode: 'NONE', tagFilter: '*', type: 'PT_BRANCH_TAG'
+      }*/
       stages {
-	 stage('Unit Test') {
+	stage('Unit Test') {
             steps {
 		tool name: 'maven', type: 'maven'
                 sh 'mvn clean test'
