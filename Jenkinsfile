@@ -60,6 +60,11 @@ pipeline {
 	 }
 	 stage("Deploy to SIT Environment") {
             steps {
+		    input {
+                      message 'Choose to proceed or Abort'
+                      id 'user input'
+                    }
+
 		    sshPublisher(publishers: [sshPublisherDesc(configName: 'sitTomcat', 
 							   transfers: [sshTransfer(cleanRemote: false, 
 							   excludes: '', execCommand: '', 
