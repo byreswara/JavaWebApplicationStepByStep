@@ -58,20 +58,9 @@ pipeline {
 							  verbose: false)])
 	    }
 	 }
-	 stage('Select environment ') {
-	     steps {
-		 script {
-		     input id: 'User input', 
-			        message: 'Choose to Proceed or Abort', 
-			        parameters: [choice(choices: ['sitTomcat', 'STAGING'],
-				description: 'Choose environment to deploy application', 
-				name: 'env')]
-		 }
-	     }
-	 }
 	 stage("Deploy to SIT Environment") {
             steps {
-		    sshPublisher(publishers: [sshPublisherDesc(configName: '${env}', 
+		    sshPublisher(publishers: [sshPublisherDesc(configName: 'sitTomcat', 
 							   transfers: [sshTransfer(cleanRemote: false, 
 							   excludes: '', execCommand: '', 
 							   execTimeout: 120000, 
