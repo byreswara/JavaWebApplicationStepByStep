@@ -39,7 +39,7 @@ pipeline {
 	      }
             }
 	  }
-	  stage("Deploy to DEV environment") {
+	  /*stage("Deploy to DEV environment") {
             steps {
 		sshPublisher(publishers: [sshPublisherDesc(configName: 'devTomcat', 
 							   transfers: [sshTransfer(cleanRemote: false, 
@@ -57,10 +57,13 @@ pipeline {
 							  useWorkspaceInPromotion: false, 
 							  verbose: false)])
 	    }
-	 }
+	 }*/
 	 stage('Waiting for Approval'){
            steps {
-	       script {
+	      script {
+	        slackSend channel: '#anz',
+                          message: "Need Approval to deploy: JobName: ${env.JOB_NAME} BuildNumber: ${env.BUILD_NUMBER} and (<${env.BUILD_URL}input|Click here to approve>)",
+	                  color: 'good'
                     try {
                         timeout(time:30, unit:'MINUTES') {
                             env.APPROVE_SIT = input message: 'Deploy to SIT', ok: 'Continue',
