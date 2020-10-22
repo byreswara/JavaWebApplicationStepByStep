@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+ stages {
+  stage('Waiting for Approval'){
+           steps {
+             slackSend channel: '#anz',
+             message: 'slackSend "started ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"'
+	       script {
+                    try {
+                        timeout(time:30, unit:'MINUTES') {
+                            env.APPROVE_SIT = input message: 'Deploy to SIT', ok: 'Continue',
+                                parameters: [choice(name: 'APPROVE_SIT', choices: 'YES\nNO', description: 'Deploy from DEV?')]
+                            if (env.APPROVE_SIT == 'YES')
+				{
+                                env.DSIT = true
+                                } 
+			    else
+			       {
+                                env.DSIT = false
+                                }
+                        }
+                    } catch (error) {
+                        env.DSIT = true
+                        echo 'Timeout has been reached! Deploy to SIT automatically activated'
+                    }
+                }
+	   }
+	 }
+   }
+   }
