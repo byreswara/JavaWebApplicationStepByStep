@@ -4,7 +4,8 @@ pipeline {
   stage('Waiting for Approval'){
            steps {
              slackSend channel: '#anz',
-             message: "Need Approval to deploy: started ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+             message: "Need Approval to deploy: JOB_NAME: ${env.JOB_NAME} BUILD_NUMBER: ${env.BUILD_NUMBER} (<${env.BUILD_URL/input/}|Click here to approve>)",
+	     color: 'good'
 	       script {
                     try {
                         timeout(time:30, unit:'MINUTES') {
